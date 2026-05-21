@@ -85,8 +85,8 @@ export default function App() {
         end = endDate || todayStr;
       }
 
-      const activeDrivers = await dbService.getDrivers();
-      const activeVehicles = await dbService.getVehicles();
+      const activeDrivers = await dbService.getDrivers(true);
+      const activeVehicles = await dbService.getVehicles(true);
       const loadedTrips = await dbService.getTrips(start, end);
       const loadedServices = await dbService.getServices(start, end);
       const loadedSettings = await dbService.getSettings();
@@ -876,7 +876,7 @@ function EnterTripView({ drivers, vehicles, recentTrips, filter, setFilter, star
                 required
               >
                 <option value="">Select Operator...</option>
-                {drivers.map(d => (
+                {drivers.filter(d => d.status === 'active').map(d => (
                   <option key={d.id} value={d.id}>{d.name}</option>
                 ))}
               </select>
@@ -890,7 +890,7 @@ function EnterTripView({ drivers, vehicles, recentTrips, filter, setFilter, star
                 required
               >
                 <option value="">Select Asset...</option>
-                {vehicles.map(v => (
+                {vehicles.filter(v => v.status === 'active').map(v => (
                   <option key={v.id} value={v.id}>{v.plate_number} - {v.make} {v.model}</option>
                 ))}
               </select>
@@ -1092,7 +1092,7 @@ function ServiceEntriesView({ vehicles, recentServices, filter, setFilter, start
                 required
               >
                 <option value="">Select Asset...</option>
-                {vehicles.map(v => (
+                {vehicles.filter(v => v.status === 'active').map(v => (
                   <option key={v.id} value={v.id}>{v.plate_number} - {v.make} {v.model}</option>
                 ))}
               </select>
@@ -1715,7 +1715,7 @@ VITE_FIREBASE_APP_ID=your_app_id`}
                 </tr>
               </thead>
               <tbody>
-                {drivers.map(d => (
+                {drivers.filter(d => d.status === 'active').map(d => (
                   <tr key={d.id}>
                     <td style={{ fontWeight: '600' }}>{d.name}</td>
                     <td>
@@ -1780,7 +1780,7 @@ VITE_FIREBASE_APP_ID=your_app_id`}
                 </tr>
               </thead>
               <tbody>
-                {vehicles.map(v => (
+                {vehicles.filter(v => v.status === 'active').map(v => (
                   <tr key={v.id}>
                     <td style={{ fontWeight: '700' }}>{v.plate_number}</td>
                     <td>{v.make} {v.model}</td>

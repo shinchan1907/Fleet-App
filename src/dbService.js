@@ -256,20 +256,19 @@ class DBService {
   }
 
   // --- DRIVERS ---
-  async getDrivers() {
+  async getDrivers(all = false) {
     if (this.useFirebase) {
       try {
         const q = query(collection(this.db, 'drivers'), orderBy('name'));
         const querySnapshot = await getDocs(q);
-        return querySnapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter(d => d.status === 'active' && !d.deleted_at);
+        const list = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return all ? list : list.filter(d => d.status === 'active' && !d.deleted_at);
       } catch (e) {
         console.error('Firebase read failed, falling back to LocalStorage:', e);
       }
     }
-    const drivers = JSON.parse(localStorage.getItem('fleet_drivers'));
-    return drivers.filter(d => d.status === 'active' && !d.deleted_at);
+    const drivers = JSON.parse(localStorage.getItem('fleet_drivers')) || [];
+    return all ? drivers : drivers.filter(d => d.status === 'active' && !d.deleted_at);
   }
 
   async addDriver(name) {
@@ -310,19 +309,18 @@ class DBService {
   }
 
   // --- VEHICLES ---
-  async getVehicles() {
+  async getVehicles(all = false) {
     if (this.useFirebase) {
       try {
         const querySnapshot = await getDocs(collection(this.db, 'vehicles'));
-        return querySnapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter(v => v.status === 'active' && !v.deleted_at);
+        const list = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return all ? list : list.filter(v => v.status === 'active' && !v.deleted_at);
       } catch (e) {
         console.error(e);
       }
     }
-    const vehicles = JSON.parse(localStorage.getItem('fleet_vehicles'));
-    return vehicles.filter(v => v.status === 'active' && !v.deleted_at);
+    const vehicles = JSON.parse(localStorage.getItem('fleet_vehicles')) || [];
+    return all ? vehicles : vehicles.filter(v => v.status === 'active' && !v.deleted_at);
   }
 
   async addVehicle(plate_number, make, model) {
