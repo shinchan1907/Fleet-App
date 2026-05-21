@@ -1,99 +1,88 @@
-# 🚚 Fleet Master - Advanced Fleet & Trip Management SaaS
+# 🚚 Fleet Master — Serverless Logistics Management System
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](#) 
-[![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-8A2BE2.svg)](#)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-orange.svg)](#)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](#)
+A state-of-the-art, **100% serverless single-page application (SPA)** designed for fleet operators, logistics managers, and drivers. This application features high-performance dynamic SVG charts, real-time service interval threshold warning cards, SaaS roles management, and an interactive step-by-step database migration assistant.
 
-**Fleet Master** is a comprehensive, self-hosted Fleet and Trip Management SaaS solution. Built with a lightweight, secure PHP and MySQL architecture, it is designed for logistics companies, transport businesses, and any organization managing a fleet of vehicles. 
-
-With features like automated maintenance alerts, trip logging, real-time total cost of ownership (TCO) tracking, and an intuitive modern UI, Fleet Master is ready for production.
+Deployable **100% free, forever** on **Vercel** (Static Frontend) and **Google Firebase / Cloud Firestore** (Serverless Database).
 
 ---
 
-## ✨ Key Features
-*   **Trip Management:** Log daily trips, track kilometers driven, assign drivers and vehicles effortlessly.
-*   **Service & Maintenance:** Keep meticulous logs of maintenance costs. 
-*   **Automated Service Alerts:** The intelligent engine automatically calculates when a vehicle is due for service (Oil Change, Brake Pads, Tyre Change) based on driven kilometers.
-*   **Admin Dashboard:** See all fleet analytics, recent trips, and urgent service alerts at a glance.
-*   **Role-Based Access Control (RBAC):** Built-in Administrator and Agent (User) roles.
-*   **Dynamic Settings:** Configure maintenance thresholds directly from the Admin panel without touching the code.
-*   **Modern UI:** Responsive, CSS-driven UI with beautifully illustrated service alert cards.
+## ⚡ Tech Stack Architecture
+*   **Core Logic:** React 19 + Vite (Ultra-fast Hot Module Replacement)
+*   **Database Sync:** Client-Side Firebase SDK (Spark/Free Tier)
+*   **Styles & Theme Engine:** Premium Vanilla CSS (custom HSL variables, fluid animations, dynamic Light/Dark mode transitions, Electric Cyan theme)
+*   **Visual Analytics:** Zero-dependency, sub-1ms React-driven inline responsive SVG Graphs (0kb bundle footprint)
 
 ---
 
-## 🛠️ System Requirements
-*   **Web Server:** Apache or Nginx
-*   **PHP:** Version 7.4 or newer (8.x recommended)
-*   **Database:** MySQL 5.7+ or MariaDB 10.2+
-*   **PHP Extensions:** `mysqli`, `pdo_mysql`, `mbstring`, `json`
+## 🎨 Key Features
+1.  **Direct-to-Database Sync:** React connects directly to Firestore. No node/express active backend server required, reducing hosting costs to $0.
+2.  **Zero-Day Secure First-Run Setup:** Out of the box, no static pre-seeded default master backdoor accounts exist. On first startup, the app automatically converts the login screen into a master administrator credential creator, prompting the user to initialize a secure username/password.
+3.  **Self-Healing Local Sandbox Fallback:** Automatically operates in offline/sandbox mode if no Cloud database configuration is loaded or connected.
+4.  **Cloud Setup Stepper Assistant:** A gorgeous step-by-step wizard embedded directly in the Settings console that guides users on creating projects, enabling Firestore in Test Mode, registering apps, and configuring default accounts.
+5.  **Live Config Validator:** Parses and checks pasted Firebase config blocks in real-time.
+6.  **Calculated Maintenance Alerts Algorithm:** Auto-calculates aggregate distance driven by assets since their last logged service date. Illuminates detailed overdue/due-soon warning cards if distance exceeds custom mileage milestones.
+7.  **Fully Mobile-Responsive:** Highly polished grid layouts stack automatically on mobile chrome/safari. Hides non-essential items on narrow phone viewports for high-density, native-feeling app interactions.
 
 ---
 
-## 🚀 Installation Guide
+## 💻 Local Setup & Development
 
-### Option A: Standard Hosting (cPanel / LAMP Stack)
-This is the standard deployment method for shared hosting or VPS environments.
+To test the application locally on your machine, follow these simple steps:
 
-1.  **Upload Files:** Zip the project files and upload them to your server's `public_html` directory (or use an FTP client). Extract the files.
-2.  **Create Database:** Go to your cPanel -> MySQL Databases. Create a new database and a user. Link the user to the database with **All Privileges**.
-3.  **Run the Installer:** Navigate to your domain in the browser (e.g., `https://yourdomain.com`). 
-4.  **Complete Setup:** You will be automatically redirected to the installation wizard (`install.php`). Enter your Database Host (usually `localhost`), Database User, Database Password, and Database Name.
-5.  **Finish:** Click "Install System". The system will automatically build the database schema and redirect you to the login page.
-    *   *Note: Upon first installation, you may need to register an admin account directly in the database or adapt the install script to prompt for an initial admin.*
+### 1. Install Dependencies
+Make sure you have Node.js installed, then open your terminal in the project directory and run:
+```bash
+npm install
+```
 
-### Option B: Docker Deployment (Local / Cloud)
-Fleet Master is fully Dockerized for instant, zero-configuration deployment.
+### 2. Configure Environment Variables
+Copy `.env.example` in the root folder to a new file named `.env`:
+```bash
+cp .env.example .env
+```
+Fill in the exact values of your Firebase project Web App Web SDK configuration block inside this `.env` file.
 
-1.  Ensure you have [Docker](https://www.docker.com/) and Docker Compose installed.
-2.  Open your terminal and navigate to the project directory.
-3.  Run the following command:
-    ```bash
-    docker-compose up -d --build
-    ```
-4.  The application will be available at `http://localhost:8080`.
-5.  When running the web installer, use `db` as the Database Host instead of `localhost`.
+### 3. Start the Development Server
+Launch the super-fast Vite server:
+```bash
+npm run dev
+```
 
----
-
-## 🧩 Modularity: How to Add New Modules
-
-Fleet Master is designed with modularity in mind. To add a new feature (e.g., "Fuel Tracking"):
-
-1.  **Create the View:** 
-    Create a new file in the `views/` directory (e.g., `views/fuel_tracking.php`). This file will contain your HTML, PHP logic for processing forms, and UI components.
-    
-2.  **Add to Allowed Pages:** 
-    Open `index.php` and locate the `$allowed_pages` array. Add your new page:
-    ```php
-    $allowed_pages = ['dashboard', 'enter_trip', 'service_entries', 'settings', 'fuel_tracking'];
-    ```
-
-3.  **Add to Sidebar Navigation:** 
-    In `index.php`, locate the `<nav class="sidebar-nav">` section and add a new link:
-    ```html
-    <a href="?page=fuel_tracking" class="<?= $page === 'fuel_tracking' ? 'active' : '' ?>">
-        <i class="fa-solid fa-gas-pump"></i>
-        <span class="nav-text">Fuel Tracking</span>
-    </a>
-    ```
-
-4.  **Update Database Schema (If needed):** 
-    If your module requires a new database table, add the `CREATE TABLE` logic into `install.php` for future installations, and create the table manually in your current MySQL database or create a migration script.
-
-5.  **Add Helper Functions:** 
-    Place any reusable logic (like `get_fuel_records($mysqli)`) inside `includes/functions.php`.
+### 4. Open in Browser
+Open the local server URL (usually **[http://localhost:5173](http://localhost:5173)**) in Chrome, Edge, or Safari.
 
 ---
 
-## 🔐 Security Notes
-*   **Installation Protection:** Once the installation is complete, `install.php` will refuse to run as long as `config.php` exists. For absolute security, you may delete `install.php` after deployment.
-*   **Session Security:** The application relies on PHP sessions. Ensure your server is configured with secure session cookies.
+## 🔑 Dynamic Initial Credential Setup (No Default Backdoors)
+*   On first load, if the active database is empty, the login screen will automatically transform into the **Initialize Administrator** page.
+*   **Username:** Choose any administrative name or email (e.g. `admin@fleetmaster.com` or `admin`).
+*   **Password:** Choose any secure password. *Note: Firebase Authentication strictly requires passwords to be at least 6 characters long.*
+*   Once created, this account is securely stored in your active cloud console. All future sessions will load the standard **Sign In** screen.
 
 ---
 
-## 📄 License & Support
-This script is licensed for personal and commercial use under the terms defined at the time of purchase. 
-For support, bug reports, or feature requests, please contact our support desk or open an issue in the provided repository. 
+## ☁️ Zero-Cost Cloud Deployment (Production Grade)
 
-*Thank you for choosing Fleet Master!* 🚚
+### 1. Deploy Frontend & Configure Variables (Vercel)
+Vercel integrates seamlessly with Vite environment variables:
+1.  Create a free account on [Vercel](https://vercel.com/).
+2.  Push this codebase to a new repository on your GitHub.
+3.  Import the repository on the Vercel dashboard.
+4.  Navigate to the **Settings > Environment Variables** tab on Vercel.
+5.  Add the exact environment variables listed below from your Firebase project:
+    *   `VITE_FIREBASE_API_KEY`
+    *   `VITE_FIREBASE_AUTH_DOMAIN`
+    *   `VITE_FIREBASE_PROJECT_ID`
+    *   `VITE_FIREBASE_STORAGE_BUCKET`
+    *   `VITE_FIREBASE_MESSAGING_SENDER_ID`
+    *   `VITE_FIREBASE_APP_ID`
+6.  Click **Deploy** / **Rebuild**! Vercel automatically detects the variables, compiles using `npm run build`, and serves the static assets in the `dist` folder.
+
+### 2. Connect Database (Firebase)
+1.  Create a project in the [Firebase Console](https://console.firebase.google.com/).
+2.  Add a **Web App** (`</>`) to get your Web SDK credentials.
+3.  Go to **Firestore Database** in the left menu and click **Create Database** (Choose *Start in Test Mode* and select your local region).
+4.  Go to **Authentication** in the left menu, click **Get Started**, navigate to the **Sign-in method** tab, click **Email/Password**, and toggle **Enable > Save**.
+5.  Launch your live Vercel app link and the dynamic administrator setup wizard will automatically open, prompting you to set your credentials and initialize the live database instantly.
+
+*That's it! Your system is now active in the cloud!*
